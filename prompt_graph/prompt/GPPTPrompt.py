@@ -42,7 +42,7 @@ class GPPTPrompt(torch.nn.Module):
 
     def _initialize_weights(self, layer):
         import torch.nn.init as init
-        if isinstance(layer, nn.Linear):
+        if isinstance(layer, torch.nn.Linear):
             # You can choose any initialization method. Here, we use Xavier initialization.
             init.xavier_uniform_(layer.weight)
             # If you have bias, you can initialize it as well, but in this case, bias is False.

@@ -87,6 +87,7 @@ class Edgepred_Gprompt(PreTrain):
         cnt_wait = 0
 
         for epoch in range(1, num_epoch + 1):
+            print('Epoch:', epoch)
             st_time = time.time()
             train_loss = self.pretrain_one_epoch()
 

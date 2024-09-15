@@ -333,7 +333,7 @@ def NodePretrain(data, num_parts=200, split_method='Random Walk'):
         edge_index = data.edge_index
         edge_index = to_undirected(edge_index)
         data = Data(x=x, edge_index=edge_index)
-        
+
         graph_list = list(ClusterData(data=data, num_parts=num_parts))
     elif(split_method=='Random Walk'):
         from torch_cluster import random_walk

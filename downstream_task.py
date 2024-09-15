@@ -9,6 +9,11 @@ import random
 import numpy as np
 import os
 import pandas as pd
+import torch
+
+args = get_args()
+seed_everything(args.seed)
+device = torch.device('cuda:' + str(args.device) if torch.cuda.is_available() else 'cpu')
 
 def load_induced_graph(dataset_name, data, device):
 
@@ -31,18 +36,14 @@ def load_induced_graph(dataset_name, data, device):
     return graphs_list
 
 
-args = get_args()
-seed_everything(args.seed)
-
 
 print('dataset_name', args.dataset_name)
 
-
 if args.task == 'NodeTask':
     data, input_dim, output_dim = load4node(args.dataset_name)   
-    data = data.to(args.device)
+    data = data.to(device)
     if args.prompt_type in ['Gprompt', 'All-in-one', 'GPF', 'GPF-plus']:
-        graphs_list = load_induced_graph(args.dataset_name, data, args.device) 
+        graphs_list = load_induced_graph(args.dataset_name, data, device) 
     else:
         graphs_list = None 
          
@@ -54,14 +55,14 @@ if args.task == 'NodeTask':
     tasker = NodeTask(pre_train_model_path = args.pre_train_model_path, 
                     dataset_name = args.dataset_name, num_layer = args.num_layer,
                     gnn_type = args.gnn_type, hid_dim = args.hid_dim, prompt_type = args.prompt_type,
-                    epochs = args.epochs, shot_num = args.shot_num, device=args.device, lr = args.lr, wd = args.decay,
+                    epochs = args.epochs, shot_num = args.shot_num, device=device, lr = args.lr, wd = args.decay,
                     batch_size = args.batch_size, data = data, input_dim = input_dim, output_dim = output_dim, graphs_list = graphs_list)
 
 
 if args.task == 'GraphTask':
     tasker = GraphTask(pre_train_model_path = args.pre_train_model_path, 
                     dataset_name = args.dataset_name, num_layer = args.num_layer, gnn_type = args.gnn_type, hid_dim = args.hid_dim, prompt_type = args.prompt_type, epochs = args.epochs,
-                    shot_num = args.shot_num, device=args.device, lr = args.lr, wd = args.decay,
+                    shot_num = args.shot_num, device=device, lr = args.lr, wd = args.decay,
                     batch_size = args.batch_size, dataset = dataset, input_dim = input_dim, output_dim = output_dim)
 pre_train_type = tasker.pre_train_type
 
